@@ -24,8 +24,8 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    height: 30vh;
-    margin: 1vh 0 0 0;
+    height: 40%;
+    margin: 5% 0 0 0;
 }
 
 .category-heading {
@@ -74,7 +74,7 @@ body {
 .task-preview-container {
     position: relative;
     width: 90vw;
-    height: 60vh;
+    height: 60%;
     background: #E8E2DE;
     display: flex;
     justify-content: flex-start;
@@ -171,7 +171,7 @@ footer {
 
 .quick-add-button {
     position: absolute;
-    bottom: 1vh;
+    bottom: 5%;
     left: 0;
     right: 0;
     margin: auto;
