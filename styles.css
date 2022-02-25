@@ -89,7 +89,7 @@ body {
 .task-preview {
     display: flex;
     flex-direction: row;
-    height: 20%;
+    height: 23%;
     width: 95%;
     background: #DAD4D1;
     border-radius: 15px;
