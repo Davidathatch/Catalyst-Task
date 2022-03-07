@@ -1,6 +1,16 @@
-// We listen to the resize event
-window.addEventListener('resize', () => {
-    // We execute the same script as before
-    let vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty('--vh', `${vh}px`);
-});
+console.log(document.cookie);
+
+let previewsCheckboxes = document.getElementsByClassName("task-preview-input");
+for(let i=0; i<previewsCheckboxes.length; i++){
+    if(!previewsCheckboxes[i].checked){
+        previewsCheckboxes[i].addEventListener("click", function() {
+        document.cookie = "check=" + previewsCheckboxes[i].parentElement.parentElement.previousElementSibling.children[0].children[0].innerText;
+        location.reload();
+    })
+    }else {
+        previewsCheckboxes[i].addEventListener("click", function() {
+            document.cookie = "uncheck=" + previewsCheckboxes[i].parentElement.parentElement.previousElementSibling.children[0].children[0].innerText;
+            location.reload();
+        })
+    }
+}
