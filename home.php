@@ -6,16 +6,21 @@
 
     $conn = new mysqli($servername, $username, $password, 'tasks');
 
+    echo print_r($_COOKIE);
+
     if($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
-
-    if(isset($_COOKIE["check"])) {
+    if (isset($_COOKIE["check"])) {
         $completeSQL = "UPDATE taskslist SET isComplete = 1 WHERE taskTitle = \"" . $_COOKIE["check"] . "\";";
         $conn->query($completeSQL);
-    }else if(isset($_COOKIE["uncheck"])) {
+    }
+    if (isset($_COOKIE["uncheck"])) {
         $incompleteSQL = "UPDATE taskslist SET isComplete = 0 WHERE taskTitle = \"" . $_COOKIE["uncheck"] . "\";";
         $conn->query($incompleteSQL);
+    }
+    if (isset($_COOKIE["categorySearch"])) {
+        echo $_COOKIE["categorySearch"];
     }
 
     include "phpScripts/getTaskList.php";
@@ -42,7 +47,7 @@
 <body>
 <div class="flexColumn">
     <header>
-        <div class="category-container">
+        <div class="categories-container">
             <div class="category">
                 <?php include "local/categoryHeader.php" ?>
             </div>

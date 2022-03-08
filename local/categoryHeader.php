@@ -3,7 +3,7 @@ $alternatingColors = ['#889BA3', '#AABABC', '#CFCCC5'];
 $colorCounter = 0;
 foreach($completeCateList as $row) {
     ?>
-<div class="category-container">
+<div class="category-container <?php echo array_search($row, $completeCateList) ?>">
     <div class="category-heading" style="background: <?php echo $alternatingColors[$colorCounter] ?>">
         <div class="category-info-container">
             <h2 class="category-title"><?php echo $row ?></h2>
