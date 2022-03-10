@@ -1,0 +1,35 @@
+.compose-container {
+    width: 100%;
+    /*position: absolute;*/
+}
+
+.compose-container form {
+    display: flex;
+    flex-direction: column;
+    width: 75%;
+    margin: 0 auto;
+    background: #DAD4D1;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.compose-container form > label, button {
+    margin: 5px 0 2px 0;
+    font-weight: bolder;
+    font-size: 1.1em;
+}
+
+.compose-container form > input, .compose-container form > select, .compose-container form > textarea {
+    border: none;
+    border-radius: 5px;
+    background: #F2EFEB;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+}
+
+.compose-container form > button {
+    border: none;
+    background: #566373;
+    color: #F2EFEB;
+    border-radius: 5px;
+    margin-top: 10px;
+}

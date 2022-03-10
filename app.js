@@ -24,3 +24,7 @@ for(let i=0; i<categoryHeaders.length; i++){
         location.reload();
     })
 }
+
+document.getElementsByClassName("quick-add-button")[0].addEventListener("click", function() {
+    document.getElementsByClassName("compose-container")[0].classList.toggle("hidden");
+})

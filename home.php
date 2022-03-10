@@ -8,6 +8,10 @@
 
     $filteredState = false;
 
+    include "phpScripts/getTaskList.php";
+    include "phpScripts/getTaskCetegories.php";
+    include "phpScripts/addTask.php";
+
     if($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
@@ -20,8 +24,6 @@
         $conn->query($incompleteSQL);
     }
 
-    include "phpScripts/getTaskList.php";
-    include "phpScripts/getTaskCetegories.php";
 
     if ($_COOKIE["categorySearch"] !== "null") {
         $selectedCategory = $_COOKIE["categorySearch"];
@@ -44,6 +46,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&display=swap" rel="stylesheet">
 </head>
 <body>
+
+<?php include "local/taskCompose.php" ?>
+
 <div class="flexColumn">
     <header <?php if($filteredState == true) { ?>class="filter-shrink"<?php } ?>>
         <div class="categories-container">

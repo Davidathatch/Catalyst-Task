@@ -268,3 +268,75 @@ footer {
     color: white;
     width: 25%;
 }
+
+.compose-container {
+    width: 100vw;
+    height: 75vh;
+    position: absolute;
+    z-index: 150;
+    top: 5%;
+}
+
+.hidden {
+    display: none;
+}
+
+.compose-container form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 80%;
+    height: 65%;
+    margin: 0 auto;
+    background: #DAD4D1;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+}
+
+.compose-container > form > button {
+    border: none;
+    background: #566373;
+    color: #F2EFEB;
+    margin: 5px 0 2px 0;
+    font-weight: bolder;
+    font-size: 5em;
+    border-radius: 25px;
+}
+
+.pair-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.pair-container > label {
+    margin: 5px 0 2px 0;
+    font-weight: bolder;
+    font-size: 4em;
+    border-radius: 25px;
+}
+
+.pair-container > input, .pair-container > select, .pair-container > textarea {
+    border: none;
+    border-radius: 10px;
+    background: #F2EFEB;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+}
+
+.pair-container > input, .pair-container > select {
+    height: 2.5em;
+    font-size: 3.5em;
+    padding: 0;
+}
+
+.categorySelect > option {
+    font-size: .25em;
+}
+
+.pair-container form > button {
+    border: none;
+    background: #566373;
+    color: #F2EFEB;
+    border-radius: 5px;
+    margin-top: 10px;
+}
