@@ -1,29 +1,25 @@
 <?php
-//GETS ALL TASKS THAT ARE INCOMPLETE AND ADDS THEM TO READABLE ARRAY (completeTasksList)
-$getTasksSql = "SELECT * FROM taskslist WHERE isComplete=0";
+//RETRIEVES AND SORTS ALL TASKS ACCORDING TO COMPLETION STATUS
+$getTasksSql = "SELECT * FROM taskslist";
 $getTasksResult = $conn->query($getTasksSql);
 $completeTasksList = [];
-
-while($row = $getTasksResult->fetch_assoc()) {
-    $workingTask = array(
-        "taskTitle" => $row["taskTitle"],
-        "taskDate" => $row["taskDate"],
-        "taskCategory" => $row["taskCategory"],
-    );
-    $completeTasksList[] = $workingTask;
-}
-
-//GETS ALL TASKS THAT ARE COMPLETE AND ADDS THEM TO READABLE ARRAY (completedTasksList)
-$getCompletedTasksSql = "SELECT * FROM taskslist WHERE isComplete=1";
-$getCompletedTasksResult = $conn->query($getCompletedTasksSql);
 $completedTasksList = [];
 
-while($row = $getCompletedTasksResult->fetch_assoc()) {
-    $workingTask = array(
-        "taskTitle" => $row["taskTitle"],
-        "taskDate" => $row["taskDate"],
-        "taskCategory" => $row["taskCategory"],
-    );
-    $completedTasksList[] = $workingTask;
+while($row = $getTasksResult->fetch_assoc()) {
+    if ($row["isComplete"] == 0) {
+        $workingTask = array(
+            "taskTitle" => $row["taskTitle"],
+            "taskDate" => $row["taskDate"],
+            "taskCategory" => $row["taskCategory"],
+        );
+        $completeTasksList[] = $workingTask;
+    }else {
+        $workingTask = array(
+            "taskTitle" => $row["taskTitle"],
+            "taskDate" => $row["taskDate"],
+            "taskCategory" => $row["taskCategory"],
+        );
+        $completedTasksList[] = $workingTask;
+    }
+
 }
-?>

@@ -6,7 +6,7 @@
 
     $conn = new mysqli($servername, $username, $password, 'tasks');
 
-    echo print_r($_COOKIE);
+    $filteredState = false;
 
     if($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
@@ -19,16 +19,15 @@
         $incompleteSQL = "UPDATE taskslist SET isComplete = 0 WHERE taskTitle = \"" . $_COOKIE["uncheck"] . "\";";
         $conn->query($incompleteSQL);
     }
-    if (isset($_COOKIE["categorySearch"])) {
-        echo $_COOKIE["categorySearch"];
-    }
 
     include "phpScripts/getTaskList.php";
-
-    if($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
     include "phpScripts/getTaskCetegories.php";
+
+    if ($_COOKIE["categorySearch"] !== "null") {
+        $selectedCategory = $_COOKIE["categorySearch"];
+        include "phpScripts/filterTasks.php";
+        $filteredState = true;
+    }
 
 ?>
 
@@ -46,16 +45,16 @@
 </head>
 <body>
 <div class="flexColumn">
-    <header>
+    <header <?php if($filteredState == true) { ?>class="filter-shrink"<?php } ?>>
         <div class="categories-container">
             <div class="category">
                 <?php include "local/categoryHeader.php" ?>
             </div>
-            <div class="category-gradient"></div>
+            <div class="category-gradient" <?php if ($filteredState == true) { ?> style="display: none" <?php } ?>></div>
         </div>
     </header>
-    <div class="task-previews">
-        <div class="task-preview-container" style="height: 55vh; width: 90vw">
+    <div class="task-previews <?php if ($filteredState == true) {?> filter-grow <?php } ?>">
+        <div class="task-preview-container" style="width: 90vw; <?php if ($filteredState == true) {?>height: 100%;<?php }?>">
                 <?php include "local/taskPreview.php" ?>
                 <?php include "local/completeTaskPreview.php" ?>
         </div>
