@@ -161,6 +161,7 @@ header {
         "preview-heading"
         "preview-desc";
     margin: 0 0 0 5%;
+    max-width: 100%;
 }
 
 .preview-heading-container {
@@ -175,6 +176,8 @@ header {
     grid-auto-rows: min-content;
     white-space: nowrap;
     margin: 5% 0 0 0;
+    max-width:90%;
+    overflow: hidden;
 }
 
 .task-preview-heading {
@@ -339,4 +342,10 @@ footer {
     color: #F2EFEB;
     border-radius: 5px;
     margin-top: 10px;
+}
+
+.close-icon {
+    position: absolute;
+    top: 0;
+    right: 0;
 }

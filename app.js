@@ -1,5 +1,4 @@
 let previewsCheckboxes = document.getElementsByClassName("task-preview-input");
-console.log(document.cookie);
 document.cookie = "check=null";
 document.cookie = "uncheck=null";
 for(let i=0; i<previewsCheckboxes.length; i++) {
@@ -28,3 +27,11 @@ for(let i=0; i<categoryHeaders.length; i++){
 document.getElementsByClassName("quick-add-button")[0].addEventListener("click", function() {
     document.getElementsByClassName("compose-container")[0].classList.toggle("hidden");
 })
+
+let closeIcon = document.getElementsByClassName("close-icon");
+
+if (closeIcon.length > 0){
+    closeIcon[0].addEventListener("click", function() {
+        location.reload();
+    })
+}
