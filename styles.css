@@ -284,7 +284,7 @@ footer {
     display: none;
 }
 
-.compose-container form {
+.compose-container #taskComposeForm {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -297,7 +297,7 @@ footer {
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
 }
 
-.compose-container > form > button {
+.compose-container > #taskComposeForm > button {
     border: none;
     background: #566373;
     color: #F2EFEB;
@@ -336,7 +336,7 @@ footer {
     font-size: .25em;
 }
 
-.pair-container form > button {
+.pair-container #taskComposeForm > button {
     border: none;
     background: #566373;
     color: #F2EFEB;

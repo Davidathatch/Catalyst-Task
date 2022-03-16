@@ -1,5 +1,5 @@
  <div class="compose-container hidden">
-        <form action="home.php" method="post">
+        <div id="taskComposeForm">
             <div class="pair-container">
                 <label for="newTaskTitle">Title</label>
                 <input type="text" name="newTaskTitle" id="newTaskTitle" required>
@@ -19,7 +19,7 @@
                 <textarea name="newTaskNotes" id="newTaskNotes" cols="30" rows="10"></textarea>
             </div>
 
-            <button type="submit">Save</button>
-        </form>
+            <button class="task-compose-submit">Save</button>
+        </div>
     </div>
 

@@ -1,5 +1,6 @@
 <?php
 
+//Connect to MySql database
     $servername = 'localhost';
     $username = 'phpAccess';
     $password = '1234';
@@ -9,32 +10,25 @@
     $filteredState = false;
     $includeCloseIcon = false;
 
+    //Retrive all tasks from database
     include "phpScripts/getTaskList.php";
+    //Retrive all categories from database
     include "phpScripts/getTaskCetegories.php";
+    //Add any new tasks to database on POST
     include "phpScripts/addTask.php";
 
     if($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
-    if (isset($_COOKIE["check"])) {
-        $completeSQL = "UPDATE taskslist SET isComplete = 1 WHERE taskTitle = \"" . $_COOKIE["check"] . "\";";
-        $conn->query($completeSQL);
-    }
-    if (isset($_COOKIE["uncheck"])) {
-        $incompleteSQL = "UPDATE taskslist SET isComplete = 0 WHERE taskTitle = \"" . $_COOKIE["uncheck"] . "\";";
-        $conn->query($incompleteSQL);
-    }
 
 
+    //If a category is selected, edit the list of tasks to render on page
     if ($_COOKIE["categorySearch"] !== "null") {
         $selectedCategory = $_COOKIE["categorySearch"];
         include "phpScripts/filterTasks.php";
         $filteredState = true;
         $includeCloseIcon = true;
        }
-//else {
-//
-//    }
 
 ?>
 
@@ -45,6 +39,8 @@
     <title>Layout</title>
 
     <link rel="stylesheet" href="styles.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
