@@ -23,3 +23,6 @@ while($row = $getTasksResult->fetch_assoc()) {
     }
 
 }
+$_SESSION["completeTasksList"] = $completeTasksList;
+$_SESSION["completedTasksList"] = $completedTasksList;
+

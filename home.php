@@ -1,5 +1,11 @@
 <?php
 
+    session_start();
+
+//    if (isset($_SESSION["newlyAddedTask"])) {
+//        $testVar = $_SESSION["newlyAddedTask"];
+//    }
+
 //Connect to MySql database
     $servername = 'localhost';
     $username = 'phpAccess';
@@ -13,7 +19,7 @@
     //Retrive all tasks from database
     include "phpScripts/getTaskList.php";
     //Retrive all categories from database
-    include "phpScripts/getTaskCetegories.php";
+    include "phpScripts/getTaskCategories.php";
     //Add any new tasks to database on POST
     include "phpScripts/addTask.php";
 

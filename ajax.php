@@ -6,7 +6,7 @@
 
     $conn = new mysqli($servername, $username, $password, 'tasks');
 
-    require "phpScripts/getTaskCetegories.php";
+    require "phpScripts/getTaskCategories.php";
 
     if($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
@@ -24,21 +24,23 @@
         }
     }
 
-    if (isset($_POST['taskNameAdd'])) {
-        $_SESSION["newlyAddedTask"] = null;
-        $validateTitleSql = "SELECT * FROM taskslist WHERE taskTitle=\"" . $_POST["taskNameAdd"] . "\"";
-        $validationResult = $conn->query($validateTitleSql);
-
-        $postTitle = $_POST["taskNameAdd"];
-        $postCategory = array_search($_POST["taskCategoryAdd"], $completeCateList);
-        $addTaskSql = "INSERT INTO taskslist (taskTitle, taskCategory, isComplete) VALUES (\"" . $postTitle . "\", \"". $postCategory . "\", 0)";
-        $conn->query($addTaskSql);
-
-        $_SESSION["newlyAddedTask"] = array(
-            "taskName" => $postTitle,
-            "taskCategory" => $postCategory,
+if (isset($_POST['taskNameAdd'])) {
+    session_start();
+    $validateTitleSql = "SELECT * FROM taskslist WHERE taskTitle=\"" . $_POST["taskNameAdd"] . "\"";
+    $validationResult = $conn->query($validateTitleSql);
+    $postTitle = $_POST["taskNameAdd"];
+    $postCategory = array_search($_POST["taskCategoryAdd"], $_SESSION["completeCateList"]);
+    $addTaskSql = "INSERT INTO taskslist (taskTitle, taskCategory, isComplete) VALUES (\"" . $postTitle . "\", \"". $postCategory . "\", 0)";
+    if (!$conn->query($addTaskSql)) {
+        echo "Error: " . $conn->error;
+    }else {
+        echo json_encode(
+            array(
+                'postTitle' => $postTitle,
+                'postCategory' => $_SESSION["completeCateList"][$postCategory],
+            )
         );
-        echo $_POST['taskNameAdd'] . " " . $_POST['taskCategoryAdd'] . " " . $_POST['taskNotesAdd'];
     }
+}
 
 ?>
