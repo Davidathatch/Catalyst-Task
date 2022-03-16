@@ -2,6 +2,7 @@ let previewsCheckboxes = document.getElementsByClassName("task-preview-input");
 document.cookie = "check=null";
 document.cookie = "uncheck=null";
 
+//Adds functionality to checkbox: communicates with "ajax.php" when clicked, applies styles and rearranges task
 function addCheckBehavior () {
     for (let i = 0; i < previewsCheckboxes.length; i++) {
         previewsCheckboxes[i].addEventListener("click", function (e) {
@@ -27,16 +28,19 @@ function addCheckBehavior () {
     }
 }
 
+//Code to submit new task to "ajax.php" and creates new "task-preview" HTML element
 let taskComposeSubmit = document.getElementsByClassName("task-compose-submit")[0];
 taskComposeSubmit.addEventListener("click", function (e) {
     document.getElementsByClassName("compose-container")[0].classList.add("hidden");
-     let taskName = document.getElementById("newTaskTitle");
+    let taskName = document.getElementById("newTaskTitle");
     let taskCategory = document.getElementById("newTaskCategory");
     let taskNotes = document.getElementById("newTaskNotes");
     $.ajax({
         type: 'POST',
         url: 'ajax.php',
         data: {taskNameAdd: taskName.value, taskCategoryAdd: taskCategory.value, taskNotesAdd: taskNotes.value},
+
+        //When receive confirmation from "ajax.php", clear the form inputs and create new "task-preview" HTML element
         success: function (data) {
             taskName.value = "";
             taskCategory.value = "";
@@ -49,6 +53,7 @@ taskComposeSubmit.addEventListener("click", function (e) {
         }
     })
 })
+
 document.cookie = "categorySearch=null";
 let categoryHeaders = document.getElementsByClassName("category-container");
 for(let i=0; i<categoryHeaders.length; i++){
@@ -58,6 +63,7 @@ for(let i=0; i<categoryHeaders.length; i++){
     })
 }
 
+//Brings up task composition form when plus button is pressed
 document.getElementsByClassName("quick-add-button")[0].addEventListener("click", function() {
     document.getElementsByClassName("compose-container")[0].classList.toggle("hidden");
 })
@@ -70,8 +76,10 @@ if (closeIcon.length > 0){
     })
 }
 
+//Adds check behavior to all checkboxes on initial page load
 addCheckBehavior();
 
+//Creates "task-preview" and returns it
 function createTaskPreview(taskTitle, taskCategory) {
     let taskPreview = document.createElement("div");
         taskPreview.classList.add("task-preview");

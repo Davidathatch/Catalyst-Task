@@ -1,17 +1,20 @@
 <?php
 
+    //Connect to MySQL server
     $servername = 'localhost';
     $username = 'phpAccess';
     $password = '1234';
 
     $conn = new mysqli($servername, $username, $password, 'tasks');
 
+    //Included list of all task categories: "$completeCateList";
     require "phpScripts/getTaskCategories.php";
 
     if($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
 
+    //When task preview checkbox is clicked, update the task in the database
     if (isset($_POST['selectedTask'])) {
         echo $_POST['taskAction'];
         if ($_POST['taskAction'] === 'true') {
@@ -24,23 +27,24 @@
         }
     }
 
-if (isset($_POST['taskNameAdd'])) {
-    session_start();
-    $validateTitleSql = "SELECT * FROM taskslist WHERE taskTitle=\"" . $_POST["taskNameAdd"] . "\"";
-    $validationResult = $conn->query($validateTitleSql);
-    $postTitle = $_POST["taskNameAdd"];
-    $postCategory = array_search($_POST["taskCategoryAdd"], $_SESSION["completeCateList"]);
-    $addTaskSql = "INSERT INTO taskslist (taskTitle, taskCategory, isComplete) VALUES (\"" . $postTitle . "\", \"". $postCategory . "\", 0)";
-    if (!$conn->query($addTaskSql)) {
-        echo "Error: " . $conn->error;
-    }else {
-        echo json_encode(
-            array(
-                'postTitle' => $postTitle,
-                'postCategory' => $_SESSION["completeCateList"][$postCategory],
-            )
-        );
+    //When new task is submitted, update in database and return info about task in JSON format
+    if (isset($_POST['taskNameAdd'])) {
+        session_start();
+        $validateTitleSql = "SELECT * FROM taskslist WHERE taskTitle=\"" . $_POST["taskNameAdd"] . "\"";
+        $validationResult = $conn->query($validateTitleSql);
+        $postTitle = $_POST["taskNameAdd"];
+        $postCategory = array_search($_POST["taskCategoryAdd"], $_SESSION["completeCateList"]);
+        $addTaskSql = "INSERT INTO taskslist (taskTitle, taskCategory, isComplete) VALUES (\"" . $postTitle . "\", \"". $postCategory . "\", 0)";
+        if (!$conn->query($addTaskSql)) {
+            echo "Error: " . $conn->error;
+        }else {
+            echo json_encode(
+                array(
+                    'postTitle' => $postTitle,
+                    'postCategory' => $_SESSION["completeCateList"][$postCategory],
+                )
+            );
+        }
     }
-}
 
 ?>
