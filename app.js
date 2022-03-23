@@ -6,11 +6,12 @@ document.cookie = "uncheck=null";
 function addCheckBehavior () {
     for (let i = 0; i < previewsCheckboxes.length; i++) {
         previewsCheckboxes[i].addEventListener("click", function (e) {
-                let selectedTaskTitle = previewsCheckboxes[i].parentElement.parentElement.previousElementSibling.children[0].children[0].innerText;
+                let selectedTaskTitle = e.target.parentElement.parentElement.previousElementSibling.children[0].children[0].innerText;
+                let selectedCheck = e.target;
                 $.ajax({
                     type: 'POST',
                     url: 'ajax.php',
-                    data: {selectedTask: selectedTaskTitle, taskAction: previewsCheckboxes[i].checked},
+                    data: {selectedTask: selectedTaskTitle, taskAction: selectedCheck.checked},
                     success: function (response) {
                         e.target.parentElement.parentElement.parentElement.classList.toggle("task-preview-complete");
                         var selectedTask = e.target.parentElement.parentElement.parentElement;
@@ -48,13 +49,13 @@ taskComposeSubmit.addEventListener("click", function (e) {
             let parsedData = JSON.parse(data);
             console.log(parsedData["postCategory"]);
             let previewContainer = document.getElementsByClassName("task-preview-container")[0];
-            previewContainer.insertBefore(createTaskPreview(parsedData["postTitle"], parsedData["postCategory"]), previewContainer.children[0]);
+            previewContainer.insertBefore(createTaskPreview(parsedData["postTitle"], parsedData["postCategory"], "0"), previewContainer.children[0]);
             addCheckBehavior();
         }
     })
 })
 
-
+//Filter tasks according to their assigned category
 let categoryHeaders = document.getElementsByClassName("category-container");
 for(let i=0; i<categoryHeaders.length; i++){
     categoryHeaders[i].addEventListener("click", function(e){
@@ -85,8 +86,9 @@ for(let i=0; i<categoryHeaders.length; i++){
 
                 let filteredTasks = JSON.parse(response);
                 for (let i=0; i<filteredTasks.length; i++) {
-                    document.getElementsByClassName("task-preview-container")[0].append(createTaskPreview(filteredTasks[i]["taskTitle"], filteredTasks[i]["taskCategory"]));
+                    document.getElementsByClassName("task-preview-container")[0].append(createTaskPreview(filteredTasks[i]["taskTitle"], filteredTasks[i]["taskCategory"], "0"));
                 }
+                addCheckBehavior();
             }
         })
     })
@@ -97,8 +99,8 @@ document.getElementsByClassName("quick-add-button")[0].addEventListener("click",
     document.getElementsByClassName("compose-container")[0].classList.toggle("hidden");
 })
 
+//When exiting filtered results (clicking x in corner), render all tasks and categories in database
     let closeIcon = document.getElementsByClassName("close-icon")[0];
-    let categoryHeaders = document.getElementsByClassName("category-container");
     let taskPreviews = document.getElementsByClassName("task-preview");
     closeIcon.addEventListener("click", function () {
         document.getElementsByTagName("header")[0].classList.remove("filter-shrink");
@@ -107,12 +109,42 @@ document.getElementsByClassName("quick-add-button")[0].addEventListener("click",
         document.getElementsByClassName("category-gradient")[0].style.display = "-webkit-sticky";
         document.getElementsByClassName("close-icon")[0].classList.add("hidden");
 
+        //Get task list from databse and render on page, organizing and styling based on completion status
         $.ajax({
             type: 'POST',
             url: 'ajax.php',
-            data: {resetFeed: true},
+            data: {getTaskPreviews: true},
             success: function (response) {
-                console.log(response);
+                let filteredTasks = document.getElementsByClassName("task-preview");
+                for (let i=0; i<filteredTasks.length; i++) {
+                    filteredTasks[i].remove();
+                }
+
+                let tasksList = JSON.parse(response);
+
+                for (let i=0; i<tasksList.length; i++){
+                    let taskTitle = tasksList[i]["taskTitle"];
+                    let taskCategory = tasksList[i]["taskCategory"];
+                    let taskDate = tasksList[i]["taskDate"];
+                    let isComplete = tasksList[i]["isComplete"];
+
+                    let previewContainer = document.getElementsByClassName("task-preview-container")[0];
+                    if (isComplete === "1") {
+                        previewContainer.append(createTaskPreview(taskTitle, taskCategory, isComplete));
+                    }else {
+                        previewContainer.insertBefore(createTaskPreview(taskTitle, taskCategory, isComplete), previewContainer.children[0]);
+                    }
+
+                }
+            }
+        })
+        $.ajax({
+            type: 'POST',
+            url: 'ajax.php',
+            data: {getCategories: true},
+            success: function (response) {
+                let categoryList = JSON.parse(response);
+                console.log(categoryList);
             }
         })
     })
@@ -123,9 +155,12 @@ document.getElementsByClassName("quick-add-button")[0].addEventListener("click",
 addCheckBehavior();
 
 //Creates "task-preview" and returns it
-function createTaskPreview(taskTitle, taskCategory) {
+function createTaskPreview(taskTitle, taskCategory, isComplete) {
     let taskPreview = document.createElement("div");
         taskPreview.classList.add("task-preview");
+        if (isComplete === "1") {
+            taskPreview.classList.add("task-preview-complete");
+        }
 
     let taskPreviewBody = document.createElement("div");
         taskPreviewBody.classList.add("task-preview-body");
@@ -164,6 +199,9 @@ function createTaskPreview(taskTitle, taskCategory) {
         taskPreviewInput.type = "checkbox";
         taskPreviewInput.name = "task-preview-input";
         taskPreviewInput.setAttribute("class", "task-preview-input");
+        if (isComplete === "1") {
+            taskPreviewInput.checked = true;
+        }
 
     let customCheckbox = document.createElement("div");
         customCheckbox.classList.add("custom-checkbox");
@@ -183,4 +221,8 @@ function createTaskPreview(taskTitle, taskCategory) {
     taskPreview.append(taskPreviewForm);
 
     return taskPreview;
+}
+
+function createCategoryHeader(categoryTitle, categoryId) {
+    
 }
