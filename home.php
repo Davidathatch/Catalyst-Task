@@ -28,13 +28,13 @@
     }
 
 
-    //If a category is selected, edit the list of tasks to render on page
-    if ($_COOKIE["categorySearch"] !== "null") {
-        $selectedCategory = $_COOKIE["categorySearch"];
-        include "phpScripts/filterTasks.php";
-        $filteredState = true;
-        $includeCloseIcon = true;
-       }
+//    //If a category is selected, edit the list of tasks to render on page
+//    if ($_COOKIE["categorySearch"] !== "null") {
+//        $selectedCategory = $_COOKIE["categorySearch"];
+//        include "phpScripts/filterTasks.php";
+//        $filteredState = true;
+//        $includeCloseIcon = true;
+//       }
 
 ?>
 
@@ -67,11 +67,9 @@
     </header>
     <div class="task-previews <?php if ($filteredState == true) {?> filter-grow <?php } ?>">
         <div class="task-preview-container" style="width: 90vw; <?php if ($filteredState == true) {?>height: 100%;<?php }?>">
-            <?php if($includeCloseIcon === true) { ?>
-                <div class="close-icon">
+                <div class="close-icon hidden">
                     <img src="assets/close-icon.svg" alt="close-icon" style="width: 75px">
                 </div>
-            <?php } ?>
                 <?php include "local/taskPreview.php" ?>
                 <?php include "local/completeTaskPreview.php" ?>
         </div>

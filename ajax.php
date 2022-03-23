@@ -16,7 +16,7 @@
 
     //When task preview checkbox is clicked, update the task in the database
     if (isset($_POST['selectedTask'])) {
-        echo $_POST['taskAction'];
+        echo $_POST['selectedTask'];
         if ($_POST['taskAction'] === 'true') {
             $completeSQL = "UPDATE taskslist SET isComplete = 1 WHERE taskTitle = \"" . $_POST['selectedTask'] . "\";";
             $conn->query($completeSQL);
@@ -45,6 +45,28 @@
                 )
             );
         }
+    }
+
+    if (isset($_POST["filterCategory"])) {
+        $categoryKey = array_search($_POST["filterCategory"] ,$_SESSION["completeCateList"]);
+        $getCategoryTasks = "SELECT * FROM taskslist WHERE taskCategory=\"" . $categoryKey . "\";";
+        $getCategoryTasksResult = $conn->query($getCategoryTasks);
+        $filteredTaskList = array();
+
+        while ($row = $getCategoryTasksResult->fetch_assoc()) {
+            $taskMetaArray = array(
+                "taskTitle" => $row["taskTitle"],
+                "taskCategory" => $_POST["filterCategory"],
+                "taskDate" => $row["taskDate"],
+                "isComplete" => $row["isComplete"]
+            );
+            $filteredTaskList[] = $taskMetaArray;
+        }
+        echo json_encode($filteredTaskList);
+    }
+
+    if (isset($_POST["resetFeed"])) {
+        $categoryListSql = "SELECT * FROM categorylist";
     }
 
 ?>
