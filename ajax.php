@@ -47,4 +47,26 @@
         }
     }
 
+    if (isset($_POST["filterCategory"])) {
+        $categoryKey = array_search($_POST["filterCategory"] ,$_SESSION["completeCateList"]);
+        $getCategoryTasks = "SELECT * FROM taskslist WHERE taskCategory=\"" . $categoryKey . "\";";
+        $getCategoryTasksResult = $conn->query($getCategoryTasks);
+        $filteredTaskList = array();
+
+        while ($row = $getCategoryTasksResult->fetch_assoc()) {
+            $taskMetaArray = array(
+                "taskTitle" => $row["taskTitle"],
+                "taskCategory" => $_POST["filterCategory"],
+                "taskDate" => $row["taskDate"],
+                "isComplete" => $row["isComplete"]
+            );
+            $filteredTaskList[] = $taskMetaArray;
+        }
+        echo json_encode($filteredTaskList);
+    }
+
+    if (isset($_POST["resetFeed"])) {
+        $categoryListSql = "SELECT * FROM categorylist";
+    }
+
 ?>

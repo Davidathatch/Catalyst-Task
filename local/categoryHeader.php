@@ -1,6 +1,7 @@
 <?php
 $alternatingColors = ['#889BA3', '#AABABC', '#CFCCC5'];
 $colorCounter = 0;
+$categorySizeSql = "";
 foreach($completeCateList as $row) {
     ?>
 <div class="category-container <?php echo array_search($row, $completeCateList) ?>">
