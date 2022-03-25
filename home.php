@@ -27,15 +27,6 @@
         die("Connection failed: " . $conn->connect_error);
     }
 
-
-//    //If a category is selected, edit the list of tasks to render on page
-//    if ($_COOKIE["categorySearch"] !== "null") {
-//        $selectedCategory = $_COOKIE["categorySearch"];
-//        include "phpScripts/filterTasks.php";
-//        $filteredState = true;
-//        $includeCloseIcon = true;
-//       }
-
 ?>
 
 <!DOCTYPE html>

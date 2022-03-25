@@ -65,8 +65,36 @@
         echo json_encode($filteredTaskList);
     }
 
-    if (isset($_POST["resetFeed"])) {
-        $categoryListSql = "SELECT * FROM categorylist";
+    if (isset($_POST["getTaskPreviews"])) {
+        $sql = "SELECT * FROM taskslist";
+        $tasksListResult = $conn->query($sql);
+        $tasksList = array();
+
+        while ($row = $tasksListResult->fetch_assoc()) {
+            $taskMetaArray = array(
+              "taskTitle" => $row["taskTitle"],
+              "taskCategory" => $_SESSION["completeCateList"][$row["taskCategory"]],
+              "taskDate" => $row["taskDate"],
+              "isComplete" => $row["isComplete"]
+            );
+            $tasksList[] = $taskMetaArray;
+        }
+        echo json_encode($tasksList);
+    }
+
+    if (isset($_POST["getCategories"])) {
+        $sql = "SELECT * FROM taskcategories";
+        $categoryListResult = $conn->query($sql);
+        $categoryList = array();
+
+        while ($row = $categoryListResult->fetch_assoc()) {
+            $categoryMetaArray = array(
+              "categoryId" => $row["id"],
+              "categoryTitle" => $row["categoryName"]
+            );
+            $categoryList[] = $categoryMetaArray;
+        }
+        echo json_encode($categoryList);
     }
 
 ?>

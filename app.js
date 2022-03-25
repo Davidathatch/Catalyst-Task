@@ -13,7 +13,6 @@ function addCheckBehavior () {
                     url: 'ajax.php',
                     data: {selectedTask: selectedTaskTitle, taskAction: selectedCheck.checked},
                     success: function (response) {
-                        console.log(response);
                         e.target.parentElement.parentElement.parentElement.classList.toggle("task-preview-complete");
                         var selectedTask = e.target.parentElement.parentElement.parentElement;
                         var taskPreviews = document.getElementsByClassName("task-preview-container")[0];
@@ -50,48 +49,52 @@ taskComposeSubmit.addEventListener("click", function (e) {
             let parsedData = JSON.parse(data);
             console.log(parsedData["postCategory"]);
             let previewContainer = document.getElementsByClassName("task-preview-container")[0];
-            previewContainer.insertBefore(createTaskPreview(parsedData["postTitle"], parsedData["postCategory"]), previewContainer.children[0]);
+            previewContainer.insertBefore(createTaskPreview(parsedData["postTitle"], parsedData["postCategory"], "0"), previewContainer.children[0]);
             addCheckBehavior();
         }
     })
 })
 
 //Filter tasks according to their assigned category
-let categoryHeaders = document.getElementsByClassName("category-container");
-for(let i=0; i<categoryHeaders.length; i++){
-    categoryHeaders[i].addEventListener("click", function(e){
-        let selectedCategory = categoryHeaders[i].children[0].children[0].children[0].innerText;
-        $.ajax({
-            type: 'POST',
-            url: 'ajax.php',
-            data: {filterCategory: selectedCategory},
-            success: function (response) {
-                document.getElementsByTagName("header")[0].classList.add("filter-shrink");
-                document.getElementsByClassName("task-previews")[0].classList.add("filter-grow");
-                document.getElementsByClassName("task-preview-container")[0].style.height = "100%";
-                document.getElementsByClassName("category-gradient")[0].style.display = "none";
-                document.getElementsByClassName("close-icon")[0].classList.remove("hidden");
 
-                for (let i=0; i<categoryHeaders.length; i++) {
-                    if (categoryHeaders[i].children[0].children[0].children[0].innerText !== selectedCategory) {
-                        categoryHeaders[i].remove();
+function addHeaderBehavior() {
+    let categoryHeaders = document.getElementsByClassName("category-container");
+    for (let i = 0; i < categoryHeaders.length; i++) {
+        categoryHeaders[i].addEventListener("click", function (e) {
+            let selectedCategory = categoryHeaders[i].children[0].children[0].children[0].innerText;
+            $.ajax({
+                type: 'POST',
+                url: 'ajax.php',
+                data: {filterCategory: selectedCategory},
+                success: function (response) {
+                    document.getElementsByTagName("header")[0].classList.add("filter-shrink");
+                    document.getElementsByClassName("task-previews")[0].classList.add("filter-grow");
+                    document.getElementsByClassName("task-preview-container")[0].style.height = "100%";
+                    document.getElementsByClassName("category-gradient")[0].style.display = "none";
+                    document.getElementsByClassName("close-icon")[0].classList.remove("hidden");
+
+                    for (let i = 0; i < categoryHeaders.length; i++) {
+                        if (categoryHeaders[i].children[0].children[0].children[0].innerText !== selectedCategory) {
+                            categoryHeaders[i].remove();
+                            i--;
+                        }
+                    }
+
+                    let taskPreviews = document.getElementsByClassName("task-preview");
+                    for (let i = 0; i < taskPreviews.length; i++) {
+                        taskPreviews[i].remove();
                         i--;
                     }
-                }
 
-                let taskPreviews = document.getElementsByClassName("task-preview");
-                for (let i=0; i<taskPreviews.length; i++) {
-                    taskPreviews[i].remove();
-                    i--;
+                    let filteredTasks = JSON.parse(response);
+                    for (let i = 0; i < filteredTasks.length; i++) {
+                        document.getElementsByClassName("task-preview-container")[0].append(createTaskPreview(filteredTasks[i]["taskTitle"], filteredTasks[i]["taskCategory"], "0"));
+                    }
+                    addCheckBehavior();
                 }
-
-                let filteredTasks = JSON.parse(response);
-                for (let i=0; i<filteredTasks.length; i++) {
-                    document.getElementsByClassName("task-preview-container")[0].append(createTaskPreview(filteredTasks[i]["taskTitle"], filteredTasks[i]["taskCategory"]));
-                }
-            }
+            })
         })
-    })
+    }
 }
 
 //Brings up task composition form when plus button is pressed
@@ -99,6 +102,7 @@ document.getElementsByClassName("quick-add-button")[0].addEventListener("click",
     document.getElementsByClassName("compose-container")[0].classList.toggle("hidden");
 })
 
+//When exiting filtered results (clicking x in corner), render all tasks and categories in database
     let closeIcon = document.getElementsByClassName("close-icon")[0];
     let taskPreviews = document.getElementsByClassName("task-preview");
     closeIcon.addEventListener("click", function () {
@@ -108,12 +112,54 @@ document.getElementsByClassName("quick-add-button")[0].addEventListener("click",
         document.getElementsByClassName("category-gradient")[0].style.display = "-webkit-sticky";
         document.getElementsByClassName("close-icon")[0].classList.add("hidden");
 
+        //Get task list from databse and render on page, organizing and styling based on completion status
         $.ajax({
             type: 'POST',
             url: 'ajax.php',
-            data: {resetFeed: true},
+            data: {getTaskPreviews: true},
             success: function (response) {
-                console.log(response);
+                let filteredTasks = document.getElementsByClassName("task-preview");
+                for (let i=0; i<filteredTasks.length; i++) {
+                    filteredTasks[i].remove();
+                }
+
+                let tasksList = JSON.parse(response);
+
+                for (let i=0; i<tasksList.length; i++){
+                    let taskTitle = tasksList[i]["taskTitle"];
+                    let taskCategory = tasksList[i]["taskCategory"];
+                    let taskDate = tasksList[i]["taskDate"];
+                    let isComplete = tasksList[i]["isComplete"];
+
+                    let previewContainer = document.getElementsByClassName("task-preview-container")[0];
+                    if (isComplete === "1") {
+                        previewContainer.append(createTaskPreview(taskTitle, taskCategory, isComplete));
+                    }else {
+                        previewContainer.insertBefore(createTaskPreview(taskTitle, taskCategory, isComplete), previewContainer.children[0]);
+                    }
+
+                }
+            }
+        })
+        $.ajax({
+            type: 'POST',
+            url: 'ajax.php',
+            data: {getCategories: true},
+            success: function (response) {
+                let categoryList = JSON.parse(response);
+                let categoryHex = ["#889BA3", "#AABABC", "#CFCCC5"];
+                let counter = 0;
+
+                document.getElementsByClassName("category-container")[0].remove();
+                for (let i=0; i<categoryList.length; i++) {
+                    document.getElementsByClassName("category")[0].append(createCategoryHeader(categoryList[i]["categoryTitle"], categoryList[i]["categoryId"], categoryHex[counter]));
+                    if (counter >= categoryHex.length-1) {
+                        counter = 0;
+                    }else {
+                        counter++;
+                    }
+                }
+                addHeaderBehavior();
             }
         })
     })
@@ -123,10 +169,15 @@ document.getElementsByClassName("quick-add-button")[0].addEventListener("click",
 //Adds check behavior to all checkboxes on initial page load
 addCheckBehavior();
 
+addHeaderBehavior();
+
 //Creates "task-preview" and returns it
-function createTaskPreview(taskTitle, taskCategory) {
+function createTaskPreview(taskTitle, taskCategory, isComplete) {
     let taskPreview = document.createElement("div");
         taskPreview.classList.add("task-preview");
+        if (isComplete === "1") {
+            taskPreview.classList.add("task-preview-complete");
+        }
 
     let taskPreviewBody = document.createElement("div");
         taskPreviewBody.classList.add("task-preview-body");
@@ -165,6 +216,9 @@ function createTaskPreview(taskTitle, taskCategory) {
         taskPreviewInput.type = "checkbox";
         taskPreviewInput.name = "task-preview-input";
         taskPreviewInput.setAttribute("class", "task-preview-input");
+        if (isComplete === "1") {
+            taskPreviewInput.checked = true;
+        }
 
     let customCheckbox = document.createElement("div");
         customCheckbox.classList.add("custom-checkbox");
@@ -184,4 +238,37 @@ function createTaskPreview(taskTitle, taskCategory) {
     taskPreview.append(taskPreviewForm);
 
     return taskPreview;
+}
+
+function createCategoryHeader(categoryTitle, categoryId, categoryColor) {
+    let categoryContainer = document.createElement("div");
+    categoryContainer.classList.add("category-container");
+    categoryContainer.classList.add = categoryId;
+
+    let categoryHeading = document.createElement("div");
+    categoryHeading.classList.add("category-heading");
+    categoryHeading.style.background = categoryColor;
+
+    let categoryInfoContainer = document.createElement("div");
+    categoryInfoContainer.classList.add("category-info-container");
+
+    let categoryTitleElem = document.createElement("h2");
+    categoryTitleElem.classList.add("category-title");
+    categoryTitleElem.innerText = categoryTitle;
+
+    let categoryAmount = document.createElement("h3");
+    categoryAmount.classList.add("category-amount");
+    categoryAmount.innerText = "6 tasks";
+
+    let dropdownArrow = document.createElement("img");
+    dropdownArrow.src = "assets/Asset%202.svg";
+    dropdownArrow.alt = "dropdown arrow";
+
+    categoryInfoContainer.append(categoryTitleElem);
+    categoryInfoContainer.append(categoryAmount);
+    categoryHeading.append(categoryInfoContainer);
+    categoryHeading.append(dropdownArrow);
+    categoryContainer.append(categoryHeading);
+
+    return categoryContainer;
 }
